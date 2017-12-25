@@ -1,9 +1,14 @@
-import cv2
+import sys
 import random
+import cv2
+
+# set sample image name
+image_name = 'face1'
+if len(sys.argv) > 1:
+    image_name = sys.argv[1]
 
 # opencv face detect
 face_patterns = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
-image_name='face1'
 sample_image = cv2.imread('images/' + image_name + '.jpg')
 faces = face_patterns.detectMultiScale(sample_image,
                                        scaleFactor=1.1,
