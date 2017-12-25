@@ -1,0 +1,8 @@
+.DS_Store
+
+settings.json
+kernel*.json
+
+output/
+tmp/
+logs/
