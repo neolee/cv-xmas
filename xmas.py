@@ -23,11 +23,28 @@ def face_detect(image, classifier):
                                     minNeighbors=8,
                                     minSize=(50, 50))
 
-faces = face_detect(sample_image, 'classifiers/haarcascades/haarcascade_frontalface_default.xml')
-# faces = face_detect(sample_image, 'classifiers/lbpcascades/lbpcascade_frontalface.xml')
-# faces = numpy.append(face_detect(sample_image, 'classifiers/haarcascades/haarcascade_frontalface_default.xml'),
-#                      face_detect(sample_image, 'classifiers/haarcascades/haarcascade_profileface.xml'),
-#                      axis = 0)
+# while using multiple classifiers we need these utility functions
+# to merge results and remove duplicates
+def is_duplicate(face1, face2):
+    a = numpy.array((face1[0], face1[1]))
+    b = numpy.array((face2[0], face2[1]))
+    distance = numpy.linalg.norm(a - b)
+    return (distance < 60) # the magic threshold
+
+def merge_faces(faces1, faces2):
+    for face2 in faces2:
+        is_new_face = True
+        for face1 in faces1:
+            if is_duplicate(face1, face2):
+                is_new_face = False
+                break
+        if is_new_face:
+            faces1 = numpy.append(faces1, [face2], axis = 0)
+    return faces1
+
+faces1 = face_detect(sample_image, 'classifiers/haarcascades/haarcascade_frontalface_alt.xml')
+faces2 = face_detect(sample_image, 'classifiers/haarcascades/haarcascade_profileface.xml')
+faces = merge_faces(faces1, faces2)
 
 # put hats on
 for face in faces:
