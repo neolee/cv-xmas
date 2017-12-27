@@ -1,5 +1,6 @@
 import sys
 import random
+import numpy
 import cv2
 
 # set sample image name
@@ -7,18 +8,28 @@ image_name = 'face1'
 if len(sys.argv) > 1:
     image_name = sys.argv[1]
 
-# opencv face detect
-face_patterns = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
-sample_image = cv2.imread('images/' + image_name + '.jpg')
-faces = face_patterns.detectMultiScale(sample_image,
-                                       scaleFactor=1.1,
-                                       minNeighbors=8,
-                                       minSize=(50, 50))
 # xmas hats
 hats = []
 for i in range(4):
     hats.append(cv2.imread('images/hat%d.png' % i, -1))
 
+# opencv face detect
+sample_image = cv2.imread('images/' + image_name + '.jpg')
+
+def face_detect(image, classifier):
+    pattern = cv2.CascadeClassifier(classifier)
+    return pattern.detectMultiScale(image,
+                                    scaleFactor=1.1,
+                                    minNeighbors=8,
+                                    minSize=(50, 50))
+
+faces = face_detect(sample_image, 'classifiers/haarcascades/haarcascade_frontalface_default.xml')
+# faces = face_detect(sample_image, 'classifiers/lbpcascades/lbpcascade_frontalface.xml')
+# faces = numpy.append(face_detect(sample_image, 'classifiers/haarcascades/haarcascade_frontalface_default.xml'),
+#                      face_detect(sample_image, 'classifiers/haarcascades/haarcascade_profileface.xml'),
+#                      axis = 0)
+
+# put hats on
 for face in faces:
     # choose random hat
     hat = random.choice(hats)

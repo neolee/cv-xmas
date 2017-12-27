@@ -6,3 +6,5 @@ kernel*.json
 output/
 tmp/
 logs/
+
+images/kids.jpg
